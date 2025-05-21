@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Индивидуальное задание 7</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 2rem;
+      transition: background-color 0.5s ease;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    section {
+      background: #fff;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .calculator, .indicator, .report-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    input, select, button {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .keypad {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .keypad button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+    }
+
+    .result {
+      font-weight: bold;
+      padding: 0.5rem;
+      border-radius: 8px;
+      background: #eee;
+    }
+
+    .red {
+      background-color: #ffcccc !important;
+      color: #a00;
+    }
+
+    .title-output {
+      margin-top: 1rem;
+      padding: 1.5rem;
+      background: #f0f0f0;
+      border-radius: 10px;
+      text-align: center;
+      white-space: pre-line;
+      font-family: 'Georgia', serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Калькулятор -->
+    <section class="calculator">
+      <h2>Калькулятор</h2>
+      <input type="text" id="calc-num1" placeholder="Число 1" readonly />
+      <input type="text" id="calc-num2" placeholder="Число 2" readonly />
+      <select id="calc-operator">
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+      </select>
+      <button id="calc-calc">Посчитать</button>
+      <div id="calc-result" class="result"></div>
+      <div class="keypad">
+        <span>Число 1:</span>
+        <button data-target="num1">1</button>
+        <button data-target="num1">2</button>
+        <button data-target="num1">3</button>
+        <button data-target="num1">4</button>
+        <button data-target="num1">5</button>
+        <button data-target="num1">6</button>
+        <button data-target="num1">7</button>
+        <button data-target="num1">8</button>
+        <button data-target="num1">9</button>
+        <button data-target="num1">0</button>
+        <button id="clear-num1" data-target="num1">C</button>
+      </div>
+      <div class="keypad">
+        <span>Число 2:</span>
+        <button data-target="num2">1</button>
+        <button data-target="num2">2</button>
+        <button data-target="num2">3</button>
+        <button data-target="num2">4</button>
+        <button data-target="num2">5</button>
+        <button data-target="num2">6</button>
+        <button data-target="num2">7</button>
+        <button data-target="num2">8</button>
+        <button data-target="num2">9</button>
+        <button data-target="num2">0</button>
+        <button id="clear-num2" data-target="num2">C</button>
+      </div>
+    </section>
+
+    <!-- Индикатор -->
+    <section class="indicator">
+      <h2>Индикатор</h2>
+      <input type="range" id="range-indicator" min="0" max="10" step="1" value="0" />
+      <div class="keypad">
+        <button data-target="indicator">0</button>
+        <button data-target="indicator">1</button>
+        <button data-target="indicator">2</button>
+        <button data-target="indicator">3</button>
+        <button data-target="indicator">4</button>
+        <button data-target="indicator">5</button>
+        <button data-target="indicator">6</button>
+        <button data-target="indicator">7</button>
+        <button data-target="indicator">8</button>
+        <button data-target="indicator">9</button>
+        <button data-target="indicator">10</button>
+        <button id="clear-indicator" data-target="indicator">C</button>
+      </div>
+    </section>
+
+    <!-- Титульный лист -->
+    <section class="report-form">
+      <h2>Генератор титульного листа</h2>
+      <form id="reportForm">
+        <label>Кафедра:</label>
+        <input type="text" name="department" required placeholder="Введите кафедру" />
+        <label>Группа:</label>
+        <input type="text" name="group" required placeholder="Введите группу" />
+        <label>ФИО студента:</label>
+        <input type="text" name="student" required placeholder="Введите ФИО студента" />
+        <label>ФИО преподавателя:</label>
+        <input type="text" name="teacher" required placeholder="Введите ФИО преподавателя" />
+        <label>Тема отчёта:</label>
+        <input type="text" name="title" required placeholder="Введите тему отчёта" />
+        <button type="submit">Сформировать титульный лист</button>
+      </form>
+      <div id="reportOutput" class="title-output"></div>
+    </section>
+
+  </div>
+
+  <script>
+    // Калькулятор
+    const num1Input = document.getElementById('calc-num1');
+    const num2Input = document.getElementById('calc-num2');
+    const operatorSelect = document.getElementById('calc-operator');
+    const calcBtn = document.getElementById('calc-calc');
+    const calcResult = document.getElementById('calc-result');
+
+    function calculate() {
+      const num1 = parseFloat(num1Input.value);
+      const num2 = parseFloat(num2Input.value);
+      const op = operatorSelect.value;
+      if (isNaN(num1) || isNaN(num2)) {
+        calcResult.textContent = 'Введите оба числа';
+        calcResult.classList.remove('red');
+        return;
+      }
+      let res;
+      switch (op) {
+        case '+': res = num1 + num2; break;
+        case '-': res = num1 - num2; break;
+        case '*': res = num1 * num2; break;
+        case '/':
+          if (num2 === 0) {
+            calcResult.textContent = 'Ошибка: деление на 0';
+            calcResult.classList.add('red');
+            return;
+          } else {
+            res = num1 / num2;
+          }
+          break;
+      }
+      if (res > 15) {
+        calcResult.textContent = 'число > 15';
+        calcResult.classList.add('red');
+      } else {
+        calcResult.textContent = res;
+        calcResult.classList.remove('red');
+      }
+    }
+
+    document.querySelectorAll('.calculator button[data-target]').forEach(button => {
+      button.addEventListener('click', () => {
+        const target = button.dataset.target;
+        const input = target === 'num1' ? num1Input : num2Input;
+        if (button.id.startsWith('clear')) {
+          input.value = '';
+        } else {
+          input.value += button.textContent;
+        }
+      });
+    });
+
+    calcBtn.addEventListener('click', calculate);
+
+    // Индикатор
+    const rangeInput = document.getElementById('range-indicator');
+
+    document.querySelectorAll('.indicator button[data-target]').forEach(button => {
+      button.addEventListener('click', () => {
+        if (button.id === 'clear-indicator') {
+          rangeInput.value = 0;
+        } else {
+          rangeInput.value = button.textContent;
+        }
+        rangeInput.dispatchEvent(new Event('input'));
+      });
+    });
+
+    rangeInput.addEventListener('input', () => {
+      const value = parseInt(rangeInput.value);
+      const intensity = Math.min(value / 10, 1);
+      const red = Math.round(255 * intensity);
+      const greenBlue = Math.round(255 * (1 - intensity));
+      document.body.style.backgroundColor = `rgb(${red},${greenBlue},${greenBlue})`;
+    });
+
+    // Титульный лист
+    const reportForm = document.getElementById('reportForm');
+    const reportOutput = document.getElementById('reportOutput');
+
+    reportForm.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!reportForm.checkValidity()) {
+        reportForm.reportValidity();
+        return;
+      }
+
+      const dept = reportForm.department.value.trim();
+      const group = reportForm.group.value.trim();
+      const student = reportForm.student.value.trim();
+      const teacher = reportForm.teacher.value.trim();
+      const title = reportForm.title.value.trim();
+
+      const template = `
+ФГАОУ ВО МГТУ "СТАНКИН"
+${dept}
+${title}
+Группа: ${group}
+Студент: ${student}
+Преподаватель: ${teacher}
+
+_________________________  
+(подпись студента)
+_________________________  
+(подпись преподавателя)
+      `.trim();
+
+      reportOutput.textContent = template;
+    });
+  </script>
+</body>
+</html>
