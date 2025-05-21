@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Сравнение чисел</title>
+</head>
+<body>
+  <h2>Сравнение двух чисел</h2>
+
+  <label>Число 1: <input type="number" id="num1"></label><br><br>
+  <label>Число 2: <input type="number" id="num2"></label><br><br>
+
+  <button onclick="compare()">Сравнить</button>
+
+  <h3>Результаты:</h3>
+  <p id="min"></p>
+  <p id="max"></p>
+  <p id="equal"></p>
+
+  <script>
+    function min(a, b) {
+      return a < b ? a : b;
+    }
+
+    function max(a, b) {
+      return a > b ? a : b;
+    }
+
+    function equal(a, b) {
+      return a === b;
+    }
+
+    function compare() {
+      const a = Number(document.getElementById('num1').value);
+      const b = Number(document.getElementById('num2').value);
+
+      const minElem = document.getElementById('min');
+      const maxElem = document.getElementById('max');
+      const equalElem = document.getElementById('equal');
+
+      if (equal(a, b)) {
+        minElem.textContent = '';
+        maxElem.textContent = '';
+        equalElem.textContent = 'Числа равны';
+      } else {
+        minElem.textContent = `Минимум: ${min(a, b)}`;
+        maxElem.textContent = `Максимум: ${max(a, b)}`;
+        equalElem.textContent = '';
+      }
+    }
+  </script>
+</body>
+</html>
